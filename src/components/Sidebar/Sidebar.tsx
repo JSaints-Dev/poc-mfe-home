@@ -1,6 +1,6 @@
 // TODO: move to shared library
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { clearToken } from '@app/utils/auth'
 
 const MENU = [
@@ -24,11 +24,33 @@ const MENU = [
   },
 ]
 
+function getExpandedFromPath(pathname: string): Record<string, boolean> {
+  const result: Record<string, boolean> = {}
+  for (const item of MENU) {
+    if (item.children) {
+      result[item.label] = item.children.some((child) => child.href === pathname)
+    }
+  }
+  return result
+}
+
 export function Sidebar() {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+  useLocation() // re-render on in-app navigation to update active state
+  const currentPath = window.location.pathname
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
+    getExpandedFromPath(window.location.pathname),
+  )
 
   function toggle(label: string) {
-    setExpanded((prev) => ({ ...prev, [label]: !prev[label] }))
+    setExpanded((prev) => {
+      const isOpen = prev[label] ?? false
+      const next: Record<string, boolean> = {}
+      for (const item of MENU) {
+        if (item.children) next[item.label] = false
+      }
+      if (!isOpen) next[label] = true
+      return next
+    })
   }
 
   function handleLogout() {
@@ -48,7 +70,11 @@ export function Sidebar() {
               <Link
                 key={item.label}
                 to="/"
-                className="px-3 py-2 rounded-md text-sm hover:bg-white/10 transition-colors"
+                className={`px-3 py-2 rounded-md text-sm transition-colors ${
+                  currentPath === '/'
+                    ? 'bg-white/20 font-medium'
+                    : 'hover:bg-white/10'
+                }`}
               >
                 {item.label}
               </Link>
@@ -56,7 +82,11 @@ export function Sidebar() {
               <a
                 key={item.label}
                 href={item.href}
-                className="px-3 py-2 rounded-md text-sm hover:bg-white/10 transition-colors"
+                className={`px-3 py-2 rounded-md text-sm transition-colors ${
+                  currentPath === item.href
+                    ? 'bg-white/20 font-medium'
+                    : 'hover:bg-white/10'
+                }`}
               >
                 {item.label}
               </a>
@@ -79,7 +109,11 @@ export function Sidebar() {
                     <a
                       key={child.label}
                       href={child.href}
-                      className="px-3 py-1.5 rounded-md text-sm hover:bg-white/10 transition-colors opacity-90"
+                      className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+                        currentPath === child.href
+                          ? 'bg-white/20 font-medium'
+                          : 'hover:bg-white/10 opacity-90'
+                      }`}
                     >
                       {child.label}
                     </a>
