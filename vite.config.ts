@@ -16,7 +16,6 @@ function buildProxy(env: Record<string, string>) {
       changeOrigin: true,
       secure: false,
       ws: true,
-      rewrite: (path: string) => path.replace(/^\/feature-a/, ''),
     }
   }
 
@@ -26,7 +25,6 @@ function buildProxy(env: Record<string, string>) {
       changeOrigin: true,
       secure: false,
       ws: true,
-      rewrite: (path: string) => path.replace(/^\/feature-b/, ''),
     }
   }
 
