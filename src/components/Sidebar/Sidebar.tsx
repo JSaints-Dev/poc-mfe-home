@@ -1,5 +1,6 @@
 // TODO: move to shared library
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { clearToken } from '@app/utils/auth'
 
 const MENU = [
@@ -43,7 +44,15 @@ export function Sidebar() {
       <nav className="flex-1 px-2 py-4 flex flex-col gap-1">
         {MENU.map((item) => {
           if (!item.children) {
-            return (
+            return item.href === '/' ? (
+              <Link
+                key={item.label}
+                to="/"
+                className="px-3 py-2 rounded-md text-sm hover:bg-white/10 transition-colors"
+              >
+                {item.label}
+              </Link>
+            ) : (
               <a
                 key={item.label}
                 href={item.href}
