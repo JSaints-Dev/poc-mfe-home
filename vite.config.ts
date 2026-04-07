@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
-import tsConfigPaths from 'vite-tsconfig-paths'
+import { resolve } from 'path'
 
 function buildProxy(env: Record<string, string>) {
   const featureAUrl = env.VITE_MFE_FEATURE_A_URL
@@ -50,8 +50,12 @@ export default ({ mode }: { mode: string }) => {
       react(),
       babel({ presets: [reactCompilerPreset()] }),
       tailwindcss(),
-      tsConfigPaths(),
     ],
+    resolve: {
+      alias: {
+        '@app': resolve(__dirname, 'src'),
+      },
+    },
     server: serverOptions,
     preview: serverOptions,
   })
