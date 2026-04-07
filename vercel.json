@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/feature-a/:path*",
+      "destination": "https://poc-mfe-feature-a.vercel.app/:path*"
+    },
+    {
+      "source": "/feature-b/:path*",
+      "destination": "https://poc-mfe-feature-b.vercel.app/:path*"
+    },
+    {
+      "source": "/((?!feature-a|feature-b).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
